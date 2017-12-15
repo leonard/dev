@@ -1,4 +1,4 @@
-function format(string, data): string {
+export function format(string, data): string {
    
     var formatted = string;
     
@@ -13,7 +13,7 @@ function format(string, data): string {
 }
 
 
-class Salary {
+export class Salary {
     private amount: number;
     private person: ProfessionalHuman;
 
@@ -32,7 +32,7 @@ class Salary {
     }
 }
 
-abstract class Position {
+export abstract class Position {
     abstract rules: object[];
 
     getRules() {
@@ -40,14 +40,14 @@ abstract class Position {
     }
 }
 
-class ArtDirectorPosition extends Position { rules: [ { taste: 'impeccable'} ]}
-class UIDesignerPosition extends Position { rules: [ { awesome: true} ]}
-class UXDesignerPosition extends Position { rules: [ { smartest: true} ]}
-class BackendDeveloperPosition extends Position { rules: [ { system: true} ]}
-class TeamLeadPositon extends Position { rules: [ { system: true} ]}
-class CozyManagerPosition extends Position { rules: [ { system: true} ]}
+export class ArtDirectorPosition extends Position { rules: [ { taste: 'impeccable'} ]}
+export class UIDesignerPosition extends Position { rules: [ { awesome: true} ]}
+export class UXDesignerPosition extends Position { rules: [ { smartest: true} ]}
+export class BackendDeveloperPosition extends Position { rules: [ { system: true} ]}
+export class TeamLeadPositon extends Position { rules: [ { system: true} ]}
+export class CozyManagerPosition extends Position { rules: [ { system: true} ]}
 
-class FrontendDeveloperPosition extends Position {
+export class FrontendDeveloperPosition extends Position {
     private rules = [
         {
             know: 'react',
@@ -78,7 +78,7 @@ class FrontendDeveloperPosition extends Position {
     ];
 }
 
-class Human {
+export class Human {
 
     profile;
     name:string = "anonymous";
@@ -100,7 +100,7 @@ class Human {
     }
 }
 
-abstract class ProfessionalHuman extends Human {
+export abstract class ProfessionalHuman extends Human {
     abstract getSalary(): Salary;
     abstract know(what: string): boolean;
     abstract experience(what: string): number;
@@ -108,7 +108,7 @@ abstract class ProfessionalHuman extends Human {
     abstract totalPerformance(): number;
 }
 
-class BreadheadTeamMember {
+export class BreadheadTeamMember {
     position: Position;
     person: Human;
     workAddress: string = "Italianskaya street, 14";
@@ -121,7 +121,7 @@ class BreadheadTeamMember {
 }
 
 
-class Breadhead {
+export class Breadhead {
     
     static get(): Breadhead {
         return (new this());
@@ -164,7 +164,7 @@ class Breadhead {
     }
 }
 
-class HRManager extends Human {
+export class HRManager extends Human {
 
     company;
     
@@ -287,47 +287,49 @@ class HRManager extends Human {
     }
 }
 
-// class Candidate extends ProfessionalHuman {
-//     constructor(profile = {}) {
-//         super(profile);
-//     }
-//
-//     know(what) {
-//         return this.profile.hasOwnProperty(what);
-//     }
-//
-//     experience(what) {
-//         return this.profile.hasOwnProperty(what) ? new Date() - this.profile[what].start : 0;
-//     }
-//
-//     getSalary(): Salary {
-//         return new Salary(this.profile.salary , this);
-//     }
-//
-//     totalPerformance(): number {
-//         return this.profile.performance
-//     }
-// }
-//
-//
-// let you = new Candidate({
-//     react: {
-//         like: true,
-//         start: new Date('2015-01-01')
-//     },
-//     html: {
-//         start: new Date('2010-01-01')
-//     },
-//     breadhead: {
-//         like: true
-//     },
-//     'responsive layout': {
-//         like: true,
-//         start: new Date('2010-01-01')
-//     }
-// });
-//
-//
-// if (Breadhead.get().getHR().interview(you, new FrontendDeveloperPosition())) {
-//     //invide();
-// }
+export class Candidate extends ProfessionalHuman {
+    constructor(profile = {}) {
+        super(profile);
+    }
+
+    know(what) {
+        return this.profile.hasOwnProperty(what);
+    }
+
+    experience(what) {
+        return this.profile.hasOwnProperty(what) ? new Date() - this.profile[what].start : 0;
+    }
+
+    getSalary(): Salary {
+        return new Salary(this.profile.salary , this);
+    }
+
+    totalPerformance(): number {
+        return this.profile.performance
+    }
+}
+
+
+export let you = new Candidate({
+    react: {
+        like: true,
+        start: new Date('2015-01-01')
+    },
+    html: {
+        start: new Date('2010-01-01')
+    },
+    breadhead: {
+        like: true
+    },
+    'responsive layout': {
+        like: true,
+        start: new Date('2010-01-01')
+    }
+});
+
+
+export  function go() {
+    if (Breadhead.get().getHR().interview(you, new FrontendDeveloperPosition())) {
+        //invide();
+    }
+}
