@@ -15,9 +15,9 @@ function format(string, data): string {
 
 class Salary {
     private amount: number;
-    private person: Professional;
+    private person: ProfessionalHuman;
 
-    constructor(amount: number = 0, person: Professional) {
+    constructor(amount: number = 0, person: ProfessionalHuman) {
         this.amount = amount;
         this.person = person;
     }
@@ -30,19 +30,6 @@ class Salary {
     isAdequate() {
         return this.person.totalPerformance > this.amount * 2;
     }
-}
-
-interface Professional {
-    
-    /* what is the code, like 'nodejs' or 'react' */
-    know(what: string): boolean;
-    experience(what: string): number;
-    like(what: string): boolean;
-    totalPerformance(): number;
-}
-
-interface Communicative {
-    contact: string;
 }
 
 abstract class Position {
@@ -113,6 +100,13 @@ class Human {
     }
 }
 
+abstract class ProfessionalHuman extends Human {
+    abstract getSalary(): Salary;
+    abstract know(what: string): boolean;
+    abstract experience(what: string): number;
+    abstract like(what: string): boolean;
+    abstract totalPerformance(): number;
+}
 
 class BreadheadTeamMember {
     position: Position;
@@ -208,7 +202,7 @@ class HRManager extends Human {
         super.say(format(phrase, data));
     }
 
-    interview(candidate:Candidate, position: Position): boolean {
+    interview(candidate:ProfessionalHuman, position: Position): boolean {
 
         this.say("Hi " +  candidate.name + ". My name is " + this.name + ". I'm going to ask you a few questions. Ok?");
         candidate.say("Hi " +  this.name + ". Okey, let's go!");
@@ -236,7 +230,7 @@ class HRManager extends Human {
             if (candidate.like('breadhead')){
                 candidate.say("Yes, I like Breadhead so I want to join you")
                 
-                let newMember = new BreadheadTeamMember(you, FrontendDeveloperPosition);
+                let newMember = new BreadheadTeamMember(candidate, FrontendDeveloperPosition);
                 newMember.salary = salary;
                 this.company.teamMembers.push(newMember);
                 
@@ -250,24 +244,24 @@ class HRManager extends Human {
         return true;
     }
     
-    askQuestions(username:Candidate, position: Position): boolean {
+    askQuestions(candidate:ProfessionalHuman, position: Position): boolean {
         let rules = position.getRules();
         for (let rule of rules) {
             rule.status = true;
             if (rule.hasOwnProperty('know')) {
                 this.say("know", rule);
-                if (username.know(rule.know)) {
-                    username.say("Sure!");
+                if (candidate.know(rule.know)) {
+                    candidate.say("Sure!");
 
                     if (rule.hasOwnProperty('minExperience')) {
                         this.say('How long?');
-                        if (username.experience(rule.know)) {
-                            username.say('For about ' + (new Date(username.experience(rule.know)).getFullYear() - 1970) + " years!");
+                        if (candidate.experience(rule.know)) {
+                            candidate.say('For about ' + (new Date(candidate.experience(rule.know)).getFullYear() - 1970) + " years!");
                         } else {
-                            username.say("Not so much...");
+                            candidate.say("Not so much...");
                         }
 
-                        if (username.experience(rule.know) >  rule.minExperience) {
+                        if (candidate.experience(rule.know) >  rule.minExperience) {
                             this.say('good');
                         } else {
                             rule.status = false;
@@ -276,7 +270,7 @@ class HRManager extends Human {
                         this.say('good');
                     }
                 } else {
-                    username.say("No...");
+                    candidate.say("No...");
                     rule.status = false;
                 }
             }
@@ -293,47 +287,47 @@ class HRManager extends Human {
     }
 }
 
-class Candidate extends Human implements Professional {
-    constructor(profile = {}) {
-        super(profile);
-    }
-
-    know(what) {
-        return this.profile.hasOwnProperty(what);
-    }
-
-    experience(what) {
-        return this.profile.hasOwnProperty(what) ? new Date() - this.profile[what].start : 0;
-    }
-
-    getSalary(): Salary {
-        return new Salary(this.profile.salary , this);
-    }
-
-    totalPerformance(): number {
-        return this.profile.performance
-    }
-}
-
-
-let you = new Candidate({
-    react: {
-        like: true,
-        start: new Date('2015-01-01')
-    },
-    html: {
-        start: new Date('2010-01-01')
-    },
-    breadhead: {
-        like: true
-    },
-    'responsive layout': {
-        like: true,
-        start: new Date('2010-01-01')
-    }
-});
-
-
-if (Breadhead.get().getHR().interview(you, new FrontendDeveloperPosition())) {
-    //invide();
-}
+// class Candidate extends ProfessionalHuman {
+//     constructor(profile = {}) {
+//         super(profile);
+//     }
+//
+//     know(what) {
+//         return this.profile.hasOwnProperty(what);
+//     }
+//
+//     experience(what) {
+//         return this.profile.hasOwnProperty(what) ? new Date() - this.profile[what].start : 0;
+//     }
+//
+//     getSalary(): Salary {
+//         return new Salary(this.profile.salary , this);
+//     }
+//
+//     totalPerformance(): number {
+//         return this.profile.performance
+//     }
+// }
+//
+//
+// let you = new Candidate({
+//     react: {
+//         like: true,
+//         start: new Date('2015-01-01')
+//     },
+//     html: {
+//         start: new Date('2010-01-01')
+//     },
+//     breadhead: {
+//         like: true
+//     },
+//     'responsive layout': {
+//         like: true,
+//         start: new Date('2010-01-01')
+//     }
+// });
+//
+//
+// if (Breadhead.get().getHR().interview(you, new FrontendDeveloperPosition())) {
+//     //invide();
+// }
